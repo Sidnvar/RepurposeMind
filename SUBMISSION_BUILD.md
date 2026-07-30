@@ -79,3 +79,57 @@ Repurpose Mind turns one long-form source into five platform-native drafts in on
 ## 11. Screenshots（截图，可选）
 - 可补充：工作台创建原稿、五平台版本并排、Mind 记忆面板、语言切换。
 - （如需我用 Playwright 截取并嵌入，告诉我即可。）
+
+---
+
+## Details（長描述 / Long description）
+
+> 英文版與繁體中文版，以 `--------------` 分隔，可直接整段貼入 details 欄位。
+
+### English
+
+# Repurpose Mind
+
+## The Problem
+Creators pour hours into one great piece of content, then must manually rewrite it for X, TikTok, YouTube, 小紅書 and Newsletter — each with its own format, tone and length. That rework is slow, inconsistent, and does not scale.
+
+## The Solution
+Repurpose Mind turns a single long-form source into five platform-native drafts in one click. After every repurpose, the persistent Mind extracts and remembers the creator's brand voice, preferred platforms and length, then applies it automatically to the next draft. Creator profiles and memory are isolated per language (English / 簡體中文 / 繁體中文), so each audience gets a native experience.
+
+## Persistent Mind (core, not a side feature)
+- **Memory** — Brand voice, target platforms and historical preferences are stored in SQLite and survive across sessions and process restarts. Verified by `scripts/persistence-demo.mjs` (PASS) and `GET /api/profile?lang=`.
+- **Continuity** — Source drafts, versions and to-do tasks are fully persisted; refreshing the page or restarting the server restores the exact same state.
+- **Autonomous follow-up** — After each repurpose the Mind auto-extracts preferences and writes them back, with no repeated instructions. The task panel keeps tracking what has been published vs. pending.
+
+## Tech Stack
+React + Vite frontend; Node.js + Express backend with built-in `node:sqlite`; OpenAI-compatible LLM (config-driven, mock rule-template fallback). Playwright for demo capture, FFmpeg for voiceover.
+
+## Links
+- Live demo: https://youtu.be/Adag7y4-HwA
+- Repository: https://github.com/Sidnvar/RepurposeMind
+- Creator channel: https://www.youtube.com/channel/UCOUcfkJfii3p2ndvcS9U31g
+
+--------------
+
+### 繁體中文
+
+# Repurpose Mind
+
+## 面臨的問題
+創作者往往耗費大量時間寫好一篇優質內容，卻還要為 X、TikTok、YouTube、小紅書與 Newsletter 各自手動改寫一遍——每個平台的格式、語氣與長度都不相同。這種重複改寫既耗時、又難以維持一致的風格，更無法規模化。
+
+## 我們的解法
+Repurpose Mind 只需一鍵，就能把一篇長內容改寫成五個平台專屬的版本。每次改寫完成後，持久的 Mind 會自動萃取並記住創作者的品牌語氣、偏好平台與長度，並在下一稿自動套用。創作者畫像與記憶依語言隔離（English / 簡體中文 / 繁體中文），讓不同受眾都獲得原生體驗。
+
+## 持久的 Mind（核心功能，而非附屬）
+- **記憶（Memory）**——品牌語氣、目標平台與歷史偏好皆儲存於 SQLite，可跨越會話與程式重啟而保留。已由 `scripts/persistence-demo.mjs`（PASS）與 `GET /api/profile?lang=` 驗證。
+- **延續（Continuity）**——原稿、版本與待辦任務皆完整持久化；重新整理頁面或重啟伺服器後，狀態完全一致。
+- **自主跟進（Autonomous follow-up）**——每次改寫後，Mind 會自動萃取偏好並寫回，無須重複指示。任務面板持續追蹤哪些版本已發布、哪些待發布。
+
+## 技術架構
+前端採用 React + Vite；後端為 Node.js + Express，搭配內建 `node:sqlite`；智能層使用 OpenAI 相容 LLM（配置驅動，預設以規則模板 mock 回退）。示範影片以 Playwright 錄製、FFmpeg 混音配音。
+
+## 相關連結
+- 線上 Demo：https://youtu.be/Adag7y4-HwA
+- 程式碼倉庫：https://github.com/Sidnvar/RepurposeMind
+- 創作者頻道：https://www.youtube.com/channel/UCOUcfkJfii3p2ndvcS9U31g
