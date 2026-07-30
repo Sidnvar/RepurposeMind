@@ -71,10 +71,20 @@ Repurpose Mind turns one long-form source into five platform-native drafts in on
 - Demo：https://youtu.be/Adag7y4-HwA
 - 作者频道：https://www.youtube.com/channel/UCOUcfkJfii3p2ndvcS9U31g
 
-## 10. Team（团队）
-- 参赛方式：**个人参赛（Solo）**
-- 成员：**Sidnvar**（GitHub: [@Sidnvar](https://github.com/Sidnvar)；频道: https://www.youtube.com/channel/UCOUcfkJfii3p2ndvcS9U31g）
-- 如需在表单里填「团队名称 / 成员角色」，直接用上面信息即可。
+## 10. Team（团队 · 个人参赛 Solo）
+参赛方式：**个人参赛（Solo，团队人数 1）**
+
+如表单有独立团队字段，建议这样填：
+
+| 字段 | 填写内容 |
+|---|---|
+| Team Name（团队名） | `Sidnvar`（想要个人品牌）或 `Repurpose Mind`（想要项目品牌）——二选一即可 |
+| Team Size（人数） | `1` |
+| Member Name | `Sidnvar` |
+| Role | `Solo Developer / Full-stack`（产品、设计、前端、后端、LLM 集成均一人完成） |
+| Member Link | GitHub: https://github.com/Sidnvar · YouTube: https://www.youtube.com/channel/UCOUcfkJfii3p2ndvcS9U31g |
+
+> 单人参赛时，团队名通常用你的 handle 即可；若平台要求「团队名」和「项目名」分开填，团队名填 `Sidnvar`、项目名（Project Name）填 `Repurpose Mind`。
 
 ## 11. Screenshots（截图，可选）
 - 可补充：工作台创建原稿、五平台版本并排、Mind 记忆面板、语言切换。
