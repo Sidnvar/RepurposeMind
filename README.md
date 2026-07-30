@@ -2,16 +2,6 @@
 
 > 一个由 **持久化 Mind（记忆）** 驱动的跨平台内容改编助手 —— 把一篇原稿，自动改写成适配 X / TikTok / YouTube / 小红书 / Newsletter 的多语言版本，并在每次改编中持续学习你的创作偏好。
 
-**Creative Minds Jam #1** 黑客松作品
-
-> 🎬 Demo 视频：<https://youtu.be/Adag7y4-HwA>（英文 UI + 英文旁白，1:52，覆盖 1.5–2 分钟硬性要求；本地备份见 `demo/repurpose-mind-demo-en.mp4`）。
-> 📋 提交资料清单、赛道匹配与评审映射见 [`SUBMISSION.md`](./SUBMISSION.md)。
-
-## 🔗 相关链接
-- GitHub 仓库：<https://github.com/Sidnvar/RepurposeMind>
-- Demo 视频：<https://youtu.be/Adag7y4-HwA>
-- 作者 YouTube：<https://www.youtube.com/channel/UCOUcfkJfii3p2ndvcS9U31g>
-
 ---
 
 ## ✨ 核心特性
