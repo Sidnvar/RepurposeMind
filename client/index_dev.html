@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>Repurpose Mind · 开发调试页</title>
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --panel: #ffffff;
+      --border: #e2e5ec;
+      --text: #1f2430;
+      --muted: #6b7280;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --ok: #16a34a;
+      --warn: #d97706;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 16px 24px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 { font-size: 18px; margin: 0; }
+    .status-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--muted);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .status-dot.ok { background: var(--ok); }
+    .status-dot.err { background: var(--danger); }
+    .container {
+      max-width: 1080px;
+      margin: 20px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .panel.full { grid-column: 1 / -1; }
+    .panel h2 {
+      font-size: 15px;
+      margin: 0 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .platforms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .platforms label {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin: 0; font-size: 13px; color: var(--text);
+      background: var(--bg); padding: 4px 8px; border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 14px;
+      background: var(--primary);
+      color: #fff;
+      margin-top: 12px;
+    }
+    button:hover { background: var(--primary-hover); }
+    button.secondary { background: #eef0f6; color: var(--text); }
+    button.secondary:hover { background: #e2e5ec; }
+    button.small { padding: 4px 8px; font-size: 12px; margin: 0 4px 0 0; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      background: #fcfcfd;
+    }
+    .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 10px;
+      background: #eef0f6;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+    .badge.draft { background: #fef3c7; color: #92400e; }
+    .badge.ready { background: #dbeafe; color: #1e40af; }
+    .badge.published { background: #dcfce7; color: #166534; }
+    .badge.open { background: #fee2e2; color: #991b1b; }
+    .badge.done { background: #dcfce7; color: #166534; }
+    pre.debug {
+      background: #0f172a; color: #e2e8f0;
+      padding: 12px; border-radius: 8px;
+      font-size: 12px; overflow: auto; max-height: 220px;
+      white-space: pre-wrap; word-break: break-all;
+    }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .empty { color: var(--muted); font-size: 13px; padding: 8px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Repurpose Mind · 开发调试页</h1>
+    <div>
+      <span id="statusDot" class="status-dot"></span>
+      <span id="statusText">未连接</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- ① 创建原稿 + 一键改编 -->
+    <section class="panel full">
+      <h2>① 创建原稿并生成多平台改编</h2>
+      <label>标题</label>
+      <input type="text" id="title" placeholder="例如：新产品发布文案" />
+
+      <label>原稿内容</label>
+      <textarea id="originalText" placeholder="粘贴一段长内容，Mind 会把它改写成适合不同平台的版本……"></textarea>
+
+      <label>目标平台（可多选）</label>
+      <div class="platforms" id="platformBox">
+        <label><input type="checkbox" value="x" checked /> X / Twitter</label>
+        <label><input type="checkbox" value="tiktok" checked /> TikTok</label>
+        <label><input type="checkbox" value="youtube" /> YouTube</label>
+        <label><input type="checkbox" value="xiaohongshu" /> 小红书</label>
+        <label><input type="checkbox" value="newsletter" /> 邮件通讯</label>
+      </div>
+
+      <label>语气</label>
+      <select id="tone">
+        <option value="neutral">中性</option>
+        <option value="clear" selected>清晰</option>
+        <option value="professional">专业</option>
+        <option value="casual">轻松</option>
+        <option value="promo">促销</option>
+      </select>
+
+      <div class="row">
+        <button id="btnCreate">创建并改编</button>
+        <button class="secondary" id="btnRefresh">刷新全部</button>
+      </div>
+      <div class="hint">点击后会依次调用 POST /api/content 与 POST /api/content/:id/repurpose，再自动刷新下方数据。</div>
+    </section>
+
+    <!-- ② Mind 记忆 -->
+    <section class="panel">
+      <h2>② Mind 记忆（创作者画像）</h2>
+      <div id="profileBox"><div class="empty">加载中……</div></div>
+    </section>
+
+    <!-- ③ 待办任务 -->
+    <section class="panel">
+      <h2>③ 待办任务（自动跟进）</h2>
+      <div id="taskBox"><div class="empty">加载中……</div></div>
+    </section>
+
+    <!-- ④ 内容版本 -->
+    <section class="panel full">
+      <h2>④ 内容版本（各平台改编结果）</h2>
+      <div id="versionBox"><div class="empty">加载中……</div></div>
+    </section>
+
+    <!-- ⑤ 调试面板 -->
+    <section class="panel full">
+      <h2>⑤ 调试面板（最近一次接口返回）</h2>
+      <pre class="debug" id="debug">尚未调用接口</pre>
+    </section>
+  </div>
+
+  <script>
+    // ===== 后端地址配置 =====
+    // 页面由 Vite 开发服务器（5173）托管，/api 已通过 vite.config.js 代理到后端 3001，
+    // 所以用相对路径 "/api" 即可，无需关心后端端口。
+    const API_BASE = "/api";
+
+    // ===== 通用请求封装 =====
+    async function api(path, options = {}) {
+      const res = await fetch(API_BASE + path, {
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
+      const json = await res.json();
+      showDebug(`${options.method || "GET"} ${path}`, json);
+      return json;
+    }
+
+    function showDebug(title, data) {
+      document.getElementById("debug").textContent =
+        `【${title}】\n` + JSON.stringify(data, null, 2);
+    }
+
+    // ===== 后端健康检查 =====
+    async function checkHealth() {
+      const dot = document.getElementById("statusDot");
+      const text = document.getElementById("statusText");
+      try {
+        const r = await fetch(API_BASE + "/health");
+        if (r.ok) {
+          dot.className = "status-dot ok";
+          text.textContent = "已连接 (dev 5173)";
+        } else throw new Error("bad status");
+      } catch (e) {
+        dot.className = "status-dot err";
+        text.textContent = "无法连接后端，请先启动 node index.js";
+      }
+    }
+
+    // ===== ② 渲染 Mind 记忆 =====
+    async function loadProfile() {
+      const box = document.getElementById("profileBox");
+      const res = await api("/profile");
+      if (!res.success) { box.innerHTML = `<div class="empty">加载失败</div>`; return; }
+      const { profile, memory } = res.data;
+      const memHtml = (memory || []).map(m =>
+        `<div class="card"><div class="meta">${m.key}</div>${m.value}</div>`
+      ).join("") || `<div class="empty">暂无记忆</div>`;
+      box.innerHTML = `
+        <div class="card">
+          <div class="meta">创作者</div>
+          <strong>${profile.name}</strong>
+          <div class="meta" style="margin-top:6px">品牌语气：${profile.brand_voice}</div>
+          <div class="meta">目标平台：${profile.target_platforms}</div>
+        </div>
+        <div style="margin-top:10px;font-size:13px;color:var(--muted)">已记住的偏好：</div>
+        ${memHtml}
+      `;
+    }
+
+    // ===== ③ 渲染待办任务 =====
+    async function loadTasks() {
+      const box = document.getElementById("taskBox");
+      const res = await api("/tasks");
+      if (!res.success) { box.innerHTML = `<div class="empty">加载失败</div>`; return; }
+      const tasks = res.data.tasks || [];
+      if (!tasks.length) { box.innerHTML = `<div class="empty">暂无任务</div>`; return; }
+      box.innerHTML = tasks.map(t => `
+        <div class="card">
+          <div class="meta">
+            #${t.id} · ${t.task_type}
+            <span class="badge ${t.status}">${t.status}</span>
+          </div>
+          ${t.note || ""}
+          <div style="margin-top:8px">
+            <button class="small secondary" onclick="updateTask(${t.id},'done')">标记完成</button>
+            <button class="small secondary" onclick="updateTask(${t.id},'open')">重置为待处理</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function updateTask(id, status) {
+      await api(`/tasks/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status })
+      });
+      loadTasks();
+    }
+
+    // ===== ④ 渲染内容版本 =====
+    async function loadVersions() {
+      const box = document.getElementById("versionBox");
+      const res = await api("/content");
+      if (!res.success) { box.innerHTML = `<div class="empty">加载失败</div>`; return; }
+      const { sources, versions } = res.data;
+      const titleMap = {};
+      (sources || []).forEach(s => { titleMap[s.id] = s.title; });
+      if (!versions.length) { box.innerHTML = `<div class="empty">暂无版本，先在 ① 创建原稿</div>`; return; }
+      box.innerHTML = versions.map(v => `
+        <div class="card">
+          <div class="meta">
+            来自：${titleMap[v.source_id] || "未知原稿"} ·
+            ${v.platform}
+            <span class="badge ${v.status}">${v.status}</span>
+            <span class="badge">tone: ${v.tone}</span>
+          </div>
+          <div style="white-space:pre-wrap;font-size:13px;margin:6px 0">${v.version_text}</div>
+          <div>
+            <button class="small secondary" onclick="updateVersion(${v.id},'draft')">draft</button>
+            <button class="small secondary" onclick="updateVersion(${v.id},'ready')">ready</button>
+            <button class="small secondary" onclick="updateVersion(${v.id},'published')">published</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function updateVersion(id, status) {
+      await api(`/versions/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status })
+      });
+      loadVersions();
+    }
+
+    // ===== ① 创建并改编 =====
+    async function createAndRepurpose() {
+      const title = document.getElementById("title").value.trim();
+      const originalText = document.getElementById("originalText").value.trim();
+      if (!title || !originalText) {
+        alert("请先填写标题和原稿内容");
+        return;
+      }
+      const platforms = Array.from(
+        document.querySelectorAll("#platformBox input:checked")
+      ).map(el => el.value);
+      if (!platforms.length) {
+        alert("请至少选择一个目标平台");
+        return;
+      }
+      const tone = document.getElementById("tone").value;
+
+      const created = await api("/content", {
+        method: "POST",
+        body: JSON.stringify({ title, originalText })
+      });
+      if (!created.success) { alert("创建原稿失败"); return; }
+
+      const rep = await api(`/content/${created.data.id}/repurpose`, {
+        method: "POST",
+        body: JSON.stringify({ platforms, tone })
+      });
+      if (!rep.success) { alert("生成改编版本失败"); return; }
+
+      refreshAll();
+    }
+
+    // ===== 一次性刷新所有数据 =====
+    function refreshAll() {
+      loadProfile();
+      loadTasks();
+      loadVersions();
+    }
+
+    // ===== 事件绑定 =====
+    document.getElementById("btnCreate").addEventListener("click", createAndRepurpose);
+    document.getElementById("btnRefresh").addEventListener("click", refreshAll);
+
+    // ===== 页面加载 =====
+    checkHealth();
+    refreshAll();
+  </script>
+</body>
+</html>
